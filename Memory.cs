@@ -24,13 +24,29 @@ public struct Instruction
     public int Register2 => words[2];
     public int Immediate => words[3];
 
+    public void Set(int instructionCode, int r1, int r2, int imm)
+    {
+        words[0] = instructionCode;
+        words[1] = r1;
+        words[2] = r2;
+        words[3] = imm;
+    }
+
+    public override string ToString() => Code + " " + Register1 + " " + Register2 + " " + Immediate;
 }
 
 public class Memory
 {
+    int[] data;
+    Instruction[] instructions;
 
-    int[] data = new int[MemoryConstants.DataMemorySize];
-    Instruction[] instructions = new Instruction[MemoryConstants.InstructionsMemorySize];
+    public Memory()
+    {
+        data = new int[MemoryConstants.DataMemorySize];
+        instructions = new Instruction[MemoryConstants.InstructionsMemorySize];
+        for (int i = 0; i < MemoryConstants.InstructionsMemorySize; i++)
+            instructions[i] = new Instruction(0, 0, 0, 0);
+    }
 
     public int GetData(int direction) => data[direction];
     public Instruction GetInstruction(int direction) => instructions[direction];
