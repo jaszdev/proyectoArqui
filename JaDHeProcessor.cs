@@ -10,6 +10,14 @@ using UnityEngine;
 // Cache Datos Write Back Write Allocate Completamente Asociativa Alg Remplazamiento: LRU
 public class JaDHeProcessor : Processor
 {
+    string[] programNames;
+
+    public JaDHeProcessor(string[] programNames) : base()
+    {
+        this.programNames = programNames;
+        Init();
+    }
+
     protected override void Execute()
     {
         throw new System.NotImplementedException();
@@ -17,6 +25,29 @@ public class JaDHeProcessor : Processor
 
     protected override void Init()
     {
-        throw new System.NotImplementedException();
+        LoadPrograms();
     }
+
+    // Cargar programas a memoria 
+    // esta funcionalidad podria ser traspasada a otra clase
+    void LoadPrograms()
+    {
+        foreach(string program in programNames)
+        {
+            string[] lines = System.IO.File.ReadAllLines(program);
+            int i = 0;
+            foreach(string line in lines)
+            {
+                string[] args = line.Split(' ');
+                int instructionCode = int.Parse(args[0]);
+                int r1 = int.Parse(args[1]);
+                int r2 = int.Parse(args[2]);
+                int imm = int.Parse(args[3]);
+                Instruction instruction = new Instruction(instructionCode, r1, r2, imm);
+                memory.WriteInstruction(i, instruction);
+                i++;
+            }
+        }
+    }
+
 }

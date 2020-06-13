@@ -35,7 +35,7 @@ public class Memory
     public int GetData(int direction) => data[direction];
     public Instruction GetInstruction(int direction) => instructions[direction];
 
-    public void SetData(int direction, int value) => data[direction] = value;
-
+    public void WriteData(int direction, int value) => data[direction] = value;
+    public void WriteInstruction(int direction, Instruction instruction) => instructions[direction] = instruction;
 
 }
