@@ -15,6 +15,7 @@ public abstract class Processor
     protected int[] registers = new int[ProcessorConstants.NumRegisters];
     protected Instruction instructionRegister;
     protected int pcRegister;
+    protected int clock;
 
 
     // Aux Memory
@@ -28,6 +29,10 @@ public abstract class Processor
         memory = new Memory();
         dataCache = new DataCache(CacheConstants.Blocks, CacheConstants.Words, memory);
         instructionsCache = new InstructionsCache(CacheConstants.Blocks, CacheConstants.Words, memory);
+
+        instructionRegister = new Instruction(0, 0, 0, 0);
+        pcRegister = 0;
+        clock = 0;
     }
 
     protected abstract void Init();

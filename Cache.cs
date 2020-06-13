@@ -53,7 +53,7 @@ public abstract class Cache<T>
     public abstract bool Write(int direction, T value);
 
     // Load block from mainMemory 
-    protected abstract bool LoadBlock(int direction);
+    protected abstract void LoadBlock(int direction);
 
 
 }

@@ -32,10 +32,10 @@ public class Memory
     int[] data = new int[MemoryConstants.DataMemorySize];
     Instruction[] instructions = new Instruction[MemoryConstants.InstructionsMemorySize];
 
-    int GetData(int direction) => data[direction];
-    Instruction GetInstruction(int direction) => instructions[direction];
+    public int GetData(int direction) => data[direction];
+    public Instruction GetInstruction(int direction) => instructions[direction];
 
-    void SetData(int direction, int value) => data[direction] = value;
+    public void SetData(int direction, int value) => data[direction] = value;
 
 
 }
