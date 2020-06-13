@@ -95,9 +95,10 @@ public class DataCache : Cache<int>
                 {
                     column.words[k] = mainMemory.GetData(direction + k);
                 }
+                // Actualizar datos de la cache
                 column.tag = direction;
                 column.status = Status.Shared;
-                UpdateUsedOrder(i);
+                UpdateUsedOrder(i); // actualizar orden de uso de bloques
                 return; // Bloque fue cargado a cache
             }
         }

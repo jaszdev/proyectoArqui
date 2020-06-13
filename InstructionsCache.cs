@@ -17,7 +17,7 @@ public class InstructionsCache : Cache<int>
         throw new System.NotImplementedException();
     }
 
-    protected override bool LoadBlock(int direction)
+    protected override void LoadBlock(int direction)
     {
         throw new System.NotImplementedException();
     }
