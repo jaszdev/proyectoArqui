@@ -8,7 +8,7 @@ static class CacheConstants
 }
 
 
-public enum Status { Invalid, Shared };
+public enum Status { Invalid, Shared, Modified };
 
 public struct CacheColumn
 {

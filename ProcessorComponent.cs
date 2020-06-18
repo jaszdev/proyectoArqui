@@ -8,11 +8,13 @@ public class ProcessorComponent : MonoBehaviour
 
     public Processor processor;
     public string[] programNames;
+    public float quatumTime = 2f; // duracion de un quantum
 
     // Start is called before the first frame update
     void Start()
     {
         processor = new JaDHeProcessor(programNames);
+        StartCoroutine(RunCoroutine());
     }
 
     // Update is called once per frame
@@ -20,4 +22,15 @@ public class ProcessorComponent : MonoBehaviour
     {
         
     }
+
+
+    IEnumerator RunCoroutine()
+    {
+        while(true)
+        {
+            processor.Execute();
+            yield return new WaitForSeconds(quatumTime);
+        }
+    }
+
 }

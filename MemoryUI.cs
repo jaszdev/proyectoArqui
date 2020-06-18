@@ -11,35 +11,34 @@ public class MemoryUI : MonoBehaviour
     Processor processor;
     Memory memory;
 
-    public GameObject dataMemoryCellPrefab;
+    public Text instructionsText;
+
     int numData = MemoryConstants.DataMemorySize;
     int instructions = MemoryConstants.InstructionsMemorySize;
-
-    public Transform dataParent;
-    public Transform instructionsParent;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        processor = processorComponent.processor;
-        memory = processor.Memory;
-
-        for(int i = 0; i < numData; i++)
-        {
-            GameObject dataMemoryCell = Instantiate(dataMemoryCellPrefab, dataParent);
-            dataMemoryCell.GetComponent<Text>().text = memory.GetData(i).ToString();
-        }
-
-        for(int i = 0; i < instructions; i++)
-        {
-            GameObject dataMemoryCell = Instantiate(dataMemoryCellPrefab, instructionsParent);
-            dataMemoryCell.GetComponent<Text>().text = memory.GetInstruction(i).ToString();
-        }
-
+        GetProcessor();
     }
 
+    void Update()
+    {
+        if (processor == null) { GetProcessor(); return; }
 
-    
+        instructionsText.text = "";
+        for (int i = 0; i < instructions; i++)
+        {
+            instructionsText.text += memory.GetInstruction(i) + " ";
+        }
+    }
+
+    void GetProcessor()
+    {
+        processor = processorComponent.processor;
+        if(processor != null) memory = processor.Memory;
+    }
 
 
 }

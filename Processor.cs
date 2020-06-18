@@ -36,7 +36,7 @@ public abstract class Processor
     }
 
     protected abstract void Init();
-    protected abstract void Execute();
+    public abstract void Execute();
 
     public Memory Memory => memory;
 

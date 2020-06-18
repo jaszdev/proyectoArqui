@@ -6,7 +6,7 @@ using UnityEngine;
 // Procesador descrito en el enunciado del proyecto
 // Caracteristicas:
 // Procesador RISC-V
-// Cache Instrucciones Mapeo Directo * preguntar por estrategias para hit y miss, Algoritmo de remplazo de esta cache *
+// Cache Instrucciones Mapeo Directo Write Allocate
 // Cache Datos Write Back Write Allocate Completamente Asociativa Alg Remplazamiento: LRU
 public class JaDHeProcessor : Processor
 {
@@ -18,9 +18,29 @@ public class JaDHeProcessor : Processor
         Init();
     }
 
-    protected override void Execute()
+    public override void Execute()
     {
-        throw new System.NotImplementedException();
+        // Fetch
+        //instructionRegister = sdfdsfsf;
+        
+        // Decode
+
+        // op
+        // r1
+        // r2
+        // imm
+
+        // Execute
+
+        // op(r1, r2, imm)
+
+        // Mem 
+
+        // escribir o leer de memoria 
+
+        // WB
+
+        // escribir a registros
     }
 
     protected override void Init()
