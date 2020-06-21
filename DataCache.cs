@@ -83,7 +83,7 @@ public class DataCache : Cache<int>
         return false;
     }
 
-    protected override void LoadBlock(int direction)
+    public override void LoadBlock(int direction)
     {
         // Buscar LRU Block o Bloque Invalido
         for (int i = 0; i < blocks; i++)

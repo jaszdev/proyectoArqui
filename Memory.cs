@@ -33,6 +33,17 @@ public struct Instruction
     }
 
     public override string ToString() => Code + " " + Register1 + " " + Register2 + " " + Immediate;
+
+    public override bool Equals(object obj)
+    {
+        Instruction instruction = (Instruction)obj;
+        return
+            Code == instruction.Code &&
+            Register1 == instruction.Register1 &&
+            Register2 == instruction.Register2 &&
+            Immediate == instruction.Immediate;
+    }
+
 }
 
 public class Memory

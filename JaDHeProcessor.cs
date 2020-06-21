@@ -17,37 +17,10 @@ public class JaDHeProcessor : Processor
     public int r3;
     public int imm;
 
-
     public JaDHeProcessor(string[] programNames) : base()
     {
         this.programNames = programNames;
         Init();
-    }
-
-    public override void Execute()
-    {
-        // Fetch
-        //instructionRegister = sdfdsfsf;
-
-
-        // Decode and Execute
-        DecodeAndExecute();
-
-        // op
-        // r1
-        // r2
-        // imm
-
-
-        // op(r1, r2, imm)
-
-        // Mem 
-
-        // escribir o leer de memoria 
-
-        // WB
-
-        // escribir a registros
     }
 
     protected override void Init()
@@ -55,11 +28,31 @@ public class JaDHeProcessor : Processor
         LoadPrograms();
     }
 
+    public override void Execute()
+    {
+        // Fetch
+        int instructionDirection = TBL.InstDirToIndex(pcRegister);
+        instructionRegister = instructionsCache.Read(instructionDirection);
+
+        if (instructionRegister.Equals(InstructionsCache.INVALID_INSTRUCTION)) // Miss
+        {
+            instructionsCache.LoadBlock(instructionDirection);
+            instructionRegister = instructionsCache.Read(instructionDirection);
+        }
+
+
+        // Decode and Execute
+        DecodeAndExecute();
+    }
+
     void DecodeAndExecute()
     {
+        // Decode 
         r1 = instructionRegister.Register1;
         r2 = instructionRegister.Register2;
         r3 = imm = instructionRegister.Immediate;
+
+        // Execute
         switch(instructionRegister.Code)
         {
             case 19: // addi
