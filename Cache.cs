@@ -10,15 +10,15 @@ static class CacheConstants
 
 public enum Status { Invalid, Shared, Modified };
 
-public struct CacheColumn
+public struct CacheColumn<T>
 {
-    public int[] words;
+    public T[] words;
     public int tag;
     public Status status;
 
     public CacheColumn(int numWords)
     {
-        words = new int[numWords];
+        words = new T[numWords];
         tag = 0;
         status = Status.Invalid;
     }
@@ -31,7 +31,7 @@ public struct CacheColumn
 public abstract class Cache<T> 
 {
     protected int blocks, words;
-    protected CacheColumn[] columns;
+    protected CacheColumn<T>[] columns;
     protected Memory mainMemory;
 
     protected bool readMiss; // booleano para indicar si hubo un miss al hacer un Read
@@ -41,8 +41,8 @@ public abstract class Cache<T>
     {
         this.blocks = blocks;
         this.words = words;
-        columns = new CacheColumn[blocks];
-        for (int i = 0; i < blocks; i++) columns[i] = new CacheColumn(words);
+        columns = new CacheColumn<T>[blocks];
+        for (int i = 0; i < blocks; i++) columns[i] = new CacheColumn<T>(words);
 
         mainMemory = memory;
     }

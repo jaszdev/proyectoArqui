@@ -12,19 +12,25 @@ public abstract class Processor
 {
 
     // Processor components
-    protected int[] registers = new int[ProcessorConstants.NumRegisters];
+    protected int[] registers;
     protected Instruction instructionRegister;
     protected int pcRegister;
-    protected int clock;
+    protected int clock = 0;
 
     // Aux Memory
     protected Memory memory;
     protected DataCache dataCache;
     protected InstructionsCache instructionsCache;
 
+    // Data
+    protected bool finished = false;
+    public bool Finished => finished;
+
     // Processor Constructor
     public Processor()
     {
+        registers = new int[ProcessorConstants.NumRegisters];
+
         memory = new Memory();
         dataCache = new DataCache(CacheConstants.Blocks, CacheConstants.Words, memory);
         instructionsCache = new InstructionsCache(CacheConstants.Blocks, CacheConstants.Words, memory);
@@ -38,5 +44,8 @@ public abstract class Processor
     public abstract void Execute();
 
     public Memory Memory => memory;
+    public DataCache DataCache => dataCache;
+    public int GetRegister(int index) => registers[index];
+    public int PC => pcRegister;
 
 }

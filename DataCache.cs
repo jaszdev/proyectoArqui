@@ -26,17 +26,16 @@ public class DataCache : Cache<int>
         // Revisar si la cache tiene el bloque
         for(int i = 0; i < blocks; i++)
         {
-            CacheColumn column = columns[i];
-            if (column.status == Status.Shared) // Si la columna es valida
+            if (columns[i].status != Status.Invalid) // Si la columna es valida
             {
                 // Revisar direcciones de la columns
-                for(int k = 0; k < words; k++)
+                for (int k = 0; k < words; k++)
                 {
-                    if (column.tag + k == direction) // si direccion de la palabra del bloque coincide con direction 
+                    if (columns[i].tag + k == direction) // si direccion de la palabra del bloque coincide con direction 
                     {
                         readMiss = false;
                         UpdateUsedOrder(i); // actualizar orden de uso de bloques
-                        return column.words[k]; // hit, retornar palabra en posicion direction
+                        return columns[i].words[k]; // hit, retornar palabra en posicion direction
                     }
                 }
             }
@@ -50,7 +49,7 @@ public class DataCache : Cache<int>
     // Actualiza el array usedOrder usando mrub: most recently used block
     void UpdateUsedOrder(int mrub)
     {
-        for(int i = 0; i < blocks; i++)
+        for (int i = 0; i < blocks; i++)
         {
             if (i == mrub) usedOrder[i] = 1; // bloque mrub es el mas recientemente usado
             else if (usedOrder[i] != -1) usedOrder[i] = usedOrder[i] + 1; // * posible error, que termine siendo mas grande que num blocks *
@@ -63,15 +62,15 @@ public class DataCache : Cache<int>
         // Revisar si la cache tiene el bloque
         for (int i = 0; i < blocks; i++)
         {
-            CacheColumn column = columns[i];
-            if (column.status == Status.Shared) // Si la columna es valida
+            if (columns[i].status !=  Status.Invalid) // Si la columna es valida
             {
                 // Revisar direcciones de la columns
                 for (int k = 0; k < words; k++)
                 {
-                    if (column.tag + k == direction) // si direccion de la palabra del bloque coincide con direction 
+                    if (columns[i].tag + k == direction) // si direccion de la palabra del bloque coincide con direction 
                     {
-                        column.words[k] = value; // Actualizar cache  * me parece que es necesario ademas tener el estatus de cache Modified, para saber si hay que bajar el dato a memoria * 
+                        columns[i].words[k] = value; // Actualizar cache 
+                        columns[i].status = Status.Modified;
                         UpdateUsedOrder(i); // actualizar orden de uso de bloques
                         return true; // hit, retornar true
                     }
@@ -85,24 +84,33 @@ public class DataCache : Cache<int>
 
     public override void LoadBlock(int direction)
     {
+        // Calcular bloque
+        int res = direction % words;
+        if (res != 0) // direction no es inicio del bloque
+            direction -= res; // restarle res a direction para obtener inicio del bloque 
+
         // Buscar LRU Block o Bloque Invalido
         for (int i = 0; i < blocks; i++)
         {
-            CacheColumn column = columns[i];
-            if (usedOrder[i] == blocks || usedOrder[i] == -1) // Cargar en bloque usado menos recientemente
+            if (usedOrder[i] == -1 || usedOrder[i] == blocks) // Cargar en bloque usado menos recientemente o bloque invalido
             {
                 // Cargar palabras
                 for(int k = 0; k < words; k++)
                 {
-                    column.words[k] = mainMemory.GetData(direction + k);
+                    columns[i].words[k] = mainMemory.GetData(direction + k);
                 }
                 // Actualizar datos de la cache
-                column.tag = direction;
-                column.status = Status.Shared;
+                columns[i].tag = direction;
+                columns[i].status = Status.Shared;
                 UpdateUsedOrder(i); // actualizar orden de uso de bloques
                 return; // Bloque fue cargado a cache
             }
         }
 
     }
+
+    public int GetWord(int block, int word) => columns[block].words[word];
+    public int GetTag(int block) => columns[block].tag;
+    public Status GetStatus(int block) => columns[block].status;
+
 }

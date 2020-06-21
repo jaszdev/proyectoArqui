@@ -20,6 +20,12 @@ public class JaDHeProcessor : Processor
     public JaDHeProcessor(string[] programNames) : base()
     {
         this.programNames = programNames;
+
+        // se empezara ejecutando en la primera palabra
+        // de la memoria de instrucciones, que corresponde
+        // a la siguiente direccion
+        pcRegister = 4 * MemoryConstants.DataMemorySize; 
+
         Init();
     }
 
@@ -36,13 +42,15 @@ public class JaDHeProcessor : Processor
 
         if (instructionRegister.Equals(InstructionsCache.INVALID_INSTRUCTION)) // Miss
         {
-            instructionsCache.LoadBlock(instructionDirection);
+            instructionsCache.LoadBlock(instructionDirection); // Write Allocate
             instructionRegister = instructionsCache.Read(instructionDirection);
         }
 
 
         // Decode and Execute
         DecodeAndExecute();
+
+        pcRegister += 4; // siguiente instruccion
     }
 
     void DecodeAndExecute()
@@ -52,8 +60,9 @@ public class JaDHeProcessor : Processor
         r2 = instructionRegister.Register2;
         r3 = imm = instructionRegister.Immediate;
 
+        int dataDirection;
         // Execute
-        switch(instructionRegister.Code)
+        switch (instructionRegister.Code)
         {
             case 19: // addi
                 registers[r1] = registers[r2] + imm;
@@ -71,23 +80,26 @@ public class JaDHeProcessor : Processor
                 registers[r1] = registers[r2] / registers[r3];
                 break;
             case 5: // lw
-                int val = dataCache.Read(imm + registers[r2]);
+                dataDirection = TBL.DataDirToIndex(imm + registers[r2]);
+                int val = dataCache.Read(dataDirection);
                 if (!dataCache.ReadMiss) // lw hit
                 {
                     registers[r1] = val;
                 }
                 else // lw miss
                 {
-
+                    dataCache.LoadBlock(dataDirection); // Write Allocate
+                    val = dataCache.Read(dataDirection);
+                    registers[r1] = val;
                 }
                 break;
             case 37: // sw
-                int dir = imm + registers[r2];
-                int direction = -1; //req tbc
-                bool writeHit = dataCache.Write(direction, registers[r1]);
+                dataDirection = TBL.DataDirToIndex(imm + registers[r2]);
+                bool writeHit = dataCache.Write(dataDirection, registers[r1]);
                 if (!writeHit) // sw miss
                 {
-
+                    dataCache.LoadBlock(dataDirection); // Write Allocate
+                    dataCache.Write(dataDirection, registers[r1]);
                 }
                 break;
             case 99: // beq
@@ -103,6 +115,7 @@ public class JaDHeProcessor : Processor
             case 103: // jalr
                 break;
             case 999: // end
+                finished = true;
                 break;
             default: // operacion no soportada
                 break;
