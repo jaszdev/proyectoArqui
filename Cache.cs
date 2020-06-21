@@ -34,6 +34,9 @@ public abstract class Cache<T>
     protected CacheColumn[] columns;
     protected Memory mainMemory;
 
+    protected bool readMiss; // booleano para indicar si hubo un miss al hacer un Read
+    public bool ReadMiss => readMiss;
+
     public Cache(int blocks, int words, Memory memory)
     {
         this.blocks = blocks;
@@ -45,7 +48,7 @@ public abstract class Cache<T>
     }
     
     // In case of hit, returns data
-    // in case of miss, * definir que se puede hacer para señalizar read miss *
+    // in case of miss, pone a readMiss en verdadero
     public abstract T Read(int direction);
     
     // In case of hit, writes in cache, returns true

@@ -12,7 +12,6 @@ public class DataCache : Cache<int>
     // 1: bloque mas recientemente usado
     // b: b == num blocks (b > 1), bloque usado de ultimo -> bloque a ser remplazado
 
-
     public DataCache(int blocks, int words, Memory memory) : base(blocks, words, memory)
     {
         usedOrder = new int[blocks]; // Array de orden de uso tiene un espacio por cada bloque
@@ -35,6 +34,7 @@ public class DataCache : Cache<int>
                 {
                     if (column.tag + k == direction) // si direccion de la palabra del bloque coincide con direction 
                     {
+                        readMiss = false;
                         UpdateUsedOrder(i); // actualizar orden de uso de bloques
                         return column.words[k]; // hit, retornar palabra en posicion direction
                     }
@@ -43,7 +43,8 @@ public class DataCache : Cache<int>
         }
 
         // miss, retornar dato nulo
-        return -1; // * queda por definir valor nulo para read */
+        readMiss = true;
+        return -1; 
     }
 
     // Actualiza el array usedOrder usando mrub: most recently used block

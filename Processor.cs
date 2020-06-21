@@ -17,7 +17,6 @@ public abstract class Processor
     protected int pcRegister;
     protected int clock;
 
-
     // Aux Memory
     protected Memory memory;
     protected DataCache dataCache;
