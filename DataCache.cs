@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 // Cache Datos Write Back Write Allocate Completamente Asociativa Alg Remplazamiento: LRU
 // Notas:
@@ -8,6 +7,7 @@ public class DataCache : Cache<int>
 {
     // Información para Alg de Remplazamiento LRU
     int[] usedOrder; // Array de enteros para tener informacion de en que orden se han usado los bloques
+    int last_mrub = -1;
     // -1: bloque invalido
     // 1: bloque mas recientemente usado
     // b: b == num blocks (b > 1), bloque usado de ultimo -> bloque a ser remplazado
@@ -49,12 +49,19 @@ public class DataCache : Cache<int>
     // Actualiza el array usedOrder usando mrub: most recently used block
     void UpdateUsedOrder(int mrub)
     {
+        if (mrub == last_mrub) return;
+
         for (int i = 0; i < blocks; i++)
         {
             if (i == mrub) usedOrder[i] = 1; // bloque mrub es el mas recientemente usado
-            else if (usedOrder[i] != -1) usedOrder[i] = usedOrder[i] + 1; // * posible error, que termine siendo mas grande que num blocks *
+            else if (usedOrder[i] != -1) usedOrder[i]++; // * posible error, que termine siendo mas grande que num blocks *
             // else if usedOrder[i] == -1, dejarlo en -1
         }
+        last_mrub = mrub;
+        // print userorder
+        string uo = "";
+        for (int i = 0; i < blocks; i++) uo += usedOrder[i] + " ";
+        Debug.Log(uo);
     }
 
     public override bool Write(int direction, int value)
@@ -85,7 +92,7 @@ public class DataCache : Cache<int>
     public override void LoadBlock(int direction)
     {
         // Calcular bloque
-        int res = direction % words;
+        int res = direction % words; // * before % words
         if (res != 0) // direction no es inicio del bloque
             direction -= res; // restarle res a direction para obtener inicio del bloque 
 
@@ -94,6 +101,16 @@ public class DataCache : Cache<int>
         {
             if (usedOrder[i] == -1 || usedOrder[i] == blocks) // Cargar en bloque usado menos recientemente o bloque invalido
             {
+                // Revisar si bloque esta modificado
+                if (columns[i].status == Status.Modified)
+                {
+                    // Escribir bloque en memoria Write Back
+                    for (int k = 0; k < words; k++)
+                    {
+                        mainMemory.WriteData(columns[i].tag + k, columns[i].words[k]);
+                    }
+                }
+
                 // Cargar palabras
                 for(int k = 0; k < words; k++)
                 {

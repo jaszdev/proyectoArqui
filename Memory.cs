@@ -13,7 +13,7 @@ static class MemoryConstants
 public struct Instruction
 {
     int[] words;
-
+    
     public Instruction(int instructionCode, int r1, int r2, int imm)
     {
         words = new int[] { instructionCode, r1, r2, imm };

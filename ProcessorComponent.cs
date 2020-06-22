@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,14 +14,19 @@ public class ProcessorComponent : MonoBehaviour
 
     // UI
     public Text pc;
+    public Text ir;
+    public Text cycle;
     public GameObject registersContainer;
     Text[] registers;
     public DataCacheUI dataCacheUI;
+    public InstructionCacheUI instructionCacheUI;
+    public MemoryUI memoryUI;
 
     // Start is called before the first frame update
     void Start()
     {
         processor = new JaDHeProcessor(programNames);
+        memoryUI.UpdateInstructionMemoryUI();
 
         registers = registersContainer.GetComponentsInChildren<Text>();
         // indices pares: tag 
@@ -61,11 +65,15 @@ public class ProcessorComponent : MonoBehaviour
         UpdateProcessorComponentsUI();
         UpdateRegistersUI();
         dataCacheUI.UpdateDataCacheUI();
+        instructionCacheUI.UpdateInstructionCacheUI();
+        memoryUI.UpdateDataMemoryUI();
     }
 
     void UpdateProcessorComponentsUI()
     {
         pc.text = processor.PC.ToString();
+        ir.text = processor.IR.ToString();
+        cycle.text = processor.Clock.ToString();
     }
 
     void UpdateRegistersUI()

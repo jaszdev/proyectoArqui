@@ -10,6 +10,9 @@ public class InstructionsCache : Cache<Instruction>
 
     public InstructionsCache(int blocks, int words, Memory memory) : base(blocks, words, memory)
     {
+        for (int i = 0; i < blocks; i++)
+            for (int k = 0; k < words; k++)
+                columns[i].words[k] = new Instruction(0, 0, 0, 0);
     }
 
     public override Instruction Read(int direction)
@@ -49,7 +52,7 @@ public class InstructionsCache : Cache<Instruction>
         if (res != 0) // direction no es inicio del bloque
             direction -= res; // restarle res a direction para obtener inicio del bloque 
 
-        int blockIndex = (direction / blocks) % blocks; // Mapeo Directo
+        int blockIndex = (direction / words) % blocks; // Mapeo Directo
         columns[blockIndex].status = Status.Shared;
         columns[blockIndex].tag = direction;
         for (int i = 0; i < words; i++)
@@ -57,5 +60,8 @@ public class InstructionsCache : Cache<Instruction>
             columns[blockIndex].words[i] = mainMemory.GetInstruction(direction + i);
         }
     }
+
+    public Instruction GetInstruction(int block, int word) => columns[block].words[word];
+    public int GetTag(int block) => columns[block].tag;
 
 }

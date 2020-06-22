@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
+﻿
 static class ProcessorConstants
 {
     public const int NumRegisters = 32;
     public const int MaxNumThreads = 5;
     public const int Quantum = 3;
+    public const int CacheMissDelay = 44;
 }
 
 public abstract class Processor
@@ -45,7 +44,10 @@ public abstract class Processor
 
     public Memory Memory => memory;
     public DataCache DataCache => dataCache;
+    public InstructionsCache InstructionCache => instructionsCache;
     public int GetRegister(int index) => registers[index];
     public int PC => pcRegister;
+    public Instruction IR => instructionRegister;
+    public int Clock => clock;
 
 }

@@ -11,24 +11,30 @@ public class MemoryUI : MonoBehaviour
     Processor processor;
     Memory memory;
 
+    public Text dataText;
     public Text instructionsText;
-
-    int numData = MemoryConstants.DataMemorySize;
-    int instructions = MemoryConstants.InstructionsMemorySize;
     
-
     // Start is called before the first frame update
     void Start()
     {
         GetProcessor();
     }
 
-    void Update()
+    public void UpdateDataMemoryUI()
     {
-        if (processor == null) { GetProcessor(); return; }
+        dataText.text = "";
+        for (int i = 0; i < MemoryConstants.DataMemorySize; i++)
+        {
+            dataText.text += memory.GetData(i) + " ";
+        }
+    }
+
+    public void UpdateInstructionMemoryUI()
+    {
+        GetProcessor();
 
         instructionsText.text = "";
-        for (int i = 0; i < instructions; i++)
+        for (int i = 0; i < MemoryConstants.InstructionsMemorySize; i++)
         {
             instructionsText.text += memory.GetInstruction(i) + " ";
         }

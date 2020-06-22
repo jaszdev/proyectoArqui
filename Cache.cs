@@ -15,7 +15,7 @@ public struct CacheColumn<T>
     public T[] words;
     public int tag;
     public Status status;
-
+    
     public CacheColumn(int numWords)
     {
         words = new T[numWords];

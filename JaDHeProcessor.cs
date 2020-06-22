@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-// Procesador descrito en el enunciado del proyecto
+﻿// Procesador descrito en el enunciado del proyecto
 // Caracteristicas:
 // Procesador RISC-V
 // Cache Instrucciones Mapeo Directo Write Allocate
@@ -44,6 +39,7 @@ public class JaDHeProcessor : Processor
         {
             instructionsCache.LoadBlock(instructionDirection); // Write Allocate
             instructionRegister = instructionsCache.Read(instructionDirection);
+            clock += ProcessorConstants.CacheMissDelay;
         }
 
 
@@ -91,6 +87,7 @@ public class JaDHeProcessor : Processor
                     dataCache.LoadBlock(dataDirection); // Write Allocate
                     val = dataCache.Read(dataDirection);
                     registers[r1] = val;
+                    clock += ProcessorConstants.CacheMissDelay;
                 }
                 break;
             case 37: // sw
@@ -100,6 +97,7 @@ public class JaDHeProcessor : Processor
                 {
                     dataCache.LoadBlock(dataDirection); // Write Allocate
                     dataCache.Write(dataDirection, registers[r1]);
+                    clock += ProcessorConstants.CacheMissDelay;
                 }
                 break;
             case 99: // beq
@@ -120,16 +118,17 @@ public class JaDHeProcessor : Processor
             default: // operacion no soportada
                 break;
         }
+        clock++;
     }
 
     // Cargar programas a memoria 
     // esta funcionalidad podria ser traspasada a otra clase
     void LoadPrograms()
     {
-        foreach(string program in programNames)
+        int i = 0;
+        foreach (string program in programNames)
         {
             string[] lines = System.IO.File.ReadAllLines(program);
-            int i = 0;
             foreach(string line in lines)
             {
                 string[] args = line.Split(' ');

@@ -7,7 +7,7 @@ public class DataCacheUI : MonoBehaviour
     DataCache dataCache;
     public DataCacheBlockUI[] blocks;
 
-    private void Start()
+    void Start()
     {
         GetDataCache();
     }
