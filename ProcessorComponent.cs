@@ -8,6 +8,7 @@ public class ProcessorComponent : MonoBehaviour
 
     public Processor processor;
     public string[] programNames;
+    public int quantum = 3;
     public float quatumTime = 2f; // duracion de un quantum
 
     public bool finished = false;
@@ -26,6 +27,8 @@ public class ProcessorComponent : MonoBehaviour
     void Start()
     {
         processor = new JaDHeProcessor(programNames);
+        processor.quantum = quantum;
+
         memoryUI.UpdateInstructionMemoryUI();
 
         registers = registersContainer.GetComponentsInChildren<Text>();

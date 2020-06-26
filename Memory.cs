@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 static class MemoryConstants
 {
-    public const int DataMemorySize = 48;
-    public const int InstructionsMemorySize = 80;
+    public const int DataMemorySize = 48 * 2;
+    public const int InstructionsMemorySize = 80 * 2;
     public const int Width = 1;
     public const int Latency = 20;
     public const int BusLatency = 1;
@@ -54,6 +54,9 @@ public class Memory
     public Memory()
     {
         data = new int[MemoryConstants.DataMemorySize];
+        for (int i = 0; i < MemoryConstants.DataMemorySize; i++) // inicializar toda la memoria en 1
+            data[i] = 1;
+
         instructions = new Instruction[MemoryConstants.InstructionsMemorySize];
         for (int i = 0; i < MemoryConstants.InstructionsMemorySize; i++)
             instructions[i] = new Instruction(0, 0, 0, 0);

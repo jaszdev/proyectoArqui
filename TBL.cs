@@ -7,5 +7,6 @@ public class TBL
 
     public static int DataDirToIndex(int direction) => direction / 4;
     public static int InstDirToIndex(int direction) => (direction / 4) - MemoryConstants.DataMemorySize;
+    public static int InstIndexToDir(int index) => 4 * (index + MemoryConstants.DataMemorySize);
 
 }

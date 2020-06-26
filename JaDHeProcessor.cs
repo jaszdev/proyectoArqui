@@ -1,4 +1,6 @@
-﻿// Procesador descrito en el enunciado del proyecto
+﻿using UnityEngine;
+
+// Procesador descrito en el enunciado del proyecto
 // Caracteristicas:
 // Procesador RISC-V
 // Cache Instrucciones Mapeo Directo Write Allocate
@@ -15,6 +17,13 @@ public class JaDHeProcessor : Processor
     public JaDHeProcessor(string[] programNames) : base()
     {
         this.programNames = programNames;
+
+        threads = programNames.Length; // la cantidad de threads es igual a la cantidad de programas
+
+        // se crea una memoria para guardar contextos en base
+        // a la cantidad de hilos que se calcularon
+        // a la hora de cargar los programas
+        contextMemory = new ContextMemory(threads);
 
         // se empezara ejecutando en la primera palabra
         // de la memoria de instrucciones, que corresponde
@@ -42,11 +51,10 @@ public class JaDHeProcessor : Processor
             clock += ProcessorConstants.CacheMissDelay;
         }
 
+        pcRegister += 4; // siguiente instruccion
 
         // Decode and Execute
         DecodeAndExecute();
-
-        pcRegister += 4; // siguiente instruccion
     }
 
     void DecodeAndExecute()
@@ -91,31 +99,46 @@ public class JaDHeProcessor : Processor
                 }
                 break;
             case 37: // sw
-                dataDirection = TBL.DataDirToIndex(imm + registers[r2]);
-                bool writeHit = dataCache.Write(dataDirection, registers[r1]);
+                int address = imm + r1;
+                int sourceReg = r2;
+                dataDirection = TBL.DataDirToIndex(address);
+                bool writeHit = dataCache.Write(dataDirection, registers[sourceReg]);
                 if (!writeHit) // sw miss
                 {
                     dataCache.LoadBlock(dataDirection); // Write Allocate
-                    dataCache.Write(dataDirection, registers[r1]);
+                    dataCache.Write(dataDirection, registers[sourceReg]);
                     clock += ProcessorConstants.CacheMissDelay;
                 }
                 break;
             case 99: // beq
+                if (registers[r1] == registers[r2])
+                {
+                    pcRegister += 4 * imm;
+                }
                 break;
             case 100: //bne
+                if (registers[r1] != registers[r2])
+                {
+                    pcRegister += 4 * imm;
+                }
                 break;
             case 51: // lr
                 break;
             case 52: //sc
                 break;
             case 111: // jal
+                registers[r1] = pcRegister;
+                pcRegister += imm;
                 break;
             case 103: // jalr
+                registers[r1] = pcRegister;
+                pcRegister = registers[r2] + imm;
                 break;
             case 999: // end
                 finished = true;
                 break;
             default: // operacion no soportada
+                Debug.Log("Instruccion no Soportada: " + instructionRegister);
                 break;
         }
         clock++;
@@ -126,8 +149,10 @@ public class JaDHeProcessor : Processor
     void LoadPrograms()
     {
         int i = 0;
+        int thread = 0;
         foreach (string program in programNames)
         {
+            bool firstLine = true;
             string[] lines = System.IO.File.ReadAllLines(program);
             foreach(string line in lines)
             {
@@ -138,8 +163,18 @@ public class JaDHeProcessor : Processor
                 int imm = int.Parse(args[3]);
                 Instruction instruction = new Instruction(instructionCode, r1, r2, imm);
                 memory.WriteInstruction(i, instruction);
+
+                if (firstLine) // guardar el inicio de ejecucion de cada hilo
+                {
+                    int instDir = TBL.InstIndexToDir(i); // direccion de la instruccion
+                    contextMemory.SetPC(thread, instDir);
+                    firstLine = false;
+                    //Debug.Log("Hilo " + threads + " PC Inicial: " + instDir);
+                }
+
                 i++;
             }
+            thread++;
         }
     }
 

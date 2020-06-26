@@ -7,6 +7,12 @@ static class ProcessorConstants
     public const int CacheMissDelay = 44;
 }
 
+public struct PThread
+{
+    int id;
+}
+
+
 public abstract class Processor
 {
 
@@ -15,11 +21,14 @@ public abstract class Processor
     protected Instruction instructionRegister;
     protected int pcRegister;
     protected int clock = 0;
+    public int quantum = 0;
+    public int threads = 0;
 
     // Aux Memory
     protected Memory memory;
     protected DataCache dataCache;
     protected InstructionsCache instructionsCache;
+    protected ContextMemory contextMemory;
 
     // Data
     protected bool finished = false;
