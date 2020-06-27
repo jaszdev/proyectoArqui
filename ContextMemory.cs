@@ -28,14 +28,14 @@ public class ContextMemory
     }
 
     // reg : 0 a ProcessorConstants.NumRegisters - 1
-    public void SetReg(int thread, int reg, int value)
+    public void SetRegister(int thread, int reg, int value)
     {
         int pos = thread * (1 + ProcessorConstants.NumRegisters) + (reg + 1);
         memory[pos] = value;
     }
 
     // reg : 0 a ProcessorConstants.NumRegisters - 1
-    public int GetReg(int thread, int reg)
+    public int GetRegister(int thread, int reg)
     {
         int pos = thread * (1 + ProcessorConstants.NumRegisters) + (reg + 1);
         return memory[pos];

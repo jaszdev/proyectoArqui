@@ -40,13 +40,6 @@ public class ProcessorComponent : MonoBehaviour
         UpdateUI();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     IEnumerator RunCoroutine()
     {
         yield return new WaitForSeconds(2f);

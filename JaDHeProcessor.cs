@@ -20,22 +20,21 @@ public class JaDHeProcessor : Processor
 
         threads = programNames.Length; // la cantidad de threads es igual a la cantidad de programas
 
+        threadStates = new ThreadState[threads];
+        for (int i = 0; i < threads; i++) threadStates[i] = ThreadState.Running;
+
         // se crea una memoria para guardar contextos en base
         // a la cantidad de hilos que se calcularon
         // a la hora de cargar los programas
         contextMemory = new ContextMemory(threads);
-
-        // se empezara ejecutando en la primera palabra
-        // de la memoria de instrucciones, que corresponde
-        // a la siguiente direccion
-        pcRegister = 4 * MemoryConstants.DataMemorySize; 
-
+        
         Init();
     }
 
     protected override void Init()
     {
         LoadPrograms();
+        LoadContext(currentThread); // cargar el contexto del hilo 0 (primer programa)
     }
 
     public override void Execute()
@@ -55,6 +54,10 @@ public class JaDHeProcessor : Processor
 
         // Decode and Execute
         DecodeAndExecute();
+
+        quantumCounter++;
+        if (quantumCounter == quantum) // si el hilo ya "acabo" su quantum
+            SwitchContext(); // Cambiar de contexto
     }
 
     void DecodeAndExecute()
@@ -135,7 +138,9 @@ public class JaDHeProcessor : Processor
                 pcRegister = registers[r2] + imm;
                 break;
             case 999: // end
-                finished = true;
+                threadStates[currentThread] = ThreadState.Finished; // marcar que el thread actual finalizo
+                Debug.Log("Hilo #" + currentThread + " finalizo.");
+                SwitchContext(); // cambiar de contexto a siguiente hilo
                 break;
             default: // operacion no soportada
                 Debug.Log("Instruccion no Soportada: " + instructionRegister);

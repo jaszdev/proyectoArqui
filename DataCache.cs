@@ -59,9 +59,9 @@ public class DataCache : Cache<int>
         }
         last_mrub = mrub;
         // print userorder
-        string uo = "";
-        for (int i = 0; i < blocks; i++) uo += usedOrder[i] + " ";
-        Debug.Log(uo);
+        //string uo = "";
+        //for (int i = 0; i < blocks; i++) uo += usedOrder[i] + " ";
+        //Debug.Log(uo);
     }
 
     public override bool Write(int direction, int value)
