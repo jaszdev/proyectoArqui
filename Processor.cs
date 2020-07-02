@@ -16,6 +16,7 @@ public abstract class Processor
     // Processor components
     protected int[] registers;
     protected Instruction instructionRegister;
+    protected int rl; // registro RL
     protected int pcRegister;
     protected int clock = 0;
     public int quantum;
@@ -77,19 +78,19 @@ public abstract class Processor
 
         if (nextThread == currentThread) // solo queda un hilo
         {
-            Debug.Log("Solo queda el hilo #" + nextThread);
+            //Debug.Log("Solo queda el hilo #" + nextThread);
         }
         else if (nextThread != -1)
         {
             SaveContext(currentThread);
             LoadContext(nextThread);
-            Debug.Log("Cambiando de h #" + currentThread + " a h #" + nextThread);
+            //Debug.Log("Cambiando de h #" + currentThread + " a h #" + nextThread);
             currentThread = nextThread;
         }
         else  // nextThread == -1 todos los hilos se terminaron de ejecutar
         {
             finished = true;
-            Debug.Log("Se termino la ejecucion de todos los hilos");
+            //Debug.Log("Se termino la ejecucion de todos los hilos");
             return;
         }
         
