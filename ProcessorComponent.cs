@@ -6,28 +6,29 @@ using UnityEngine.UI;
 public class ProcessorComponent : MonoBehaviour
 {
 
-    public Processor processor;
-    public string[] programNames;
-    public int quantum = 3;
+    public JaDHeProcessor processor;
     public float quatumTime = 2f; // duracion de un quantum
 
     public bool finished = false;
 
     // UI
+    public Text thread;
     public Text pc;
     public Text ir;
     public Text cycle;
+    public Text rl;
     public GameObject registersContainer;
     Text[] registers;
     public DataCacheUI dataCacheUI;
     public InstructionCacheUI instructionCacheUI;
     public MemoryUI memoryUI;
 
+    protected Coroutine currentCoroutine;
+
     // Start is called before the first frame update
     void Start()
     {
-        processor = new JaDHeProcessor(programNames);
-        processor.quantum = quantum;
+        processor = new JaDHeProcessor();
 
         memoryUI.UpdateInstructionMemoryUI();
 
@@ -35,14 +36,26 @@ public class ProcessorComponent : MonoBehaviour
         // indices pares: tag 
         // indices impares: valores
 
-        StartCoroutine(RunCoroutine());
-
         UpdateUI();
+    }
+
+    public void StartProcessor(string[] programNames, int quantum, float quantumTime)
+    {
+        finished = false;
+
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        this.quatumTime = quantumTime;
+
+        processor.ConsoleInit(programNames, quantum);
+        memoryUI.UpdateInstructionMemoryUI();
+        currentCoroutine = StartCoroutine(RunCoroutine());
     }
 
     IEnumerator RunCoroutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f); 
 
         while (true && !finished)
         {
@@ -54,6 +67,15 @@ public class ProcessorComponent : MonoBehaviour
             finished = processor.Finished;
             yield return new WaitForSeconds(quatumTime);
         }
+        processor.SaveContext(processor.CurrentThread);
+    }
+
+    public void Abort()
+    {
+        finished = false;
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+        processor.SaveContext(processor.CurrentThread);
     }
 
     void UpdateUI()
@@ -67,9 +89,11 @@ public class ProcessorComponent : MonoBehaviour
 
     void UpdateProcessorComponentsUI()
     {
+        thread.text = processor.CurrentThread.ToString();
         pc.text = processor.PC.ToString();
         ir.text = processor.IR.ToString();
         cycle.text = processor.Clock.ToString();
+        rl.text = processor.RL.ToString();
     }
 
     void UpdateRegistersUI()

@@ -18,6 +18,21 @@ public class DataCache : Cache<int>
         for (int i = 0; i < blocks; i++) usedOrder[i] = -1; // Todas las posiciones comienzan en invalido
     }
 
+    public void Init()
+    {
+        for (int i = 0; i < blocks; i++) usedOrder[i] = -1; // Todas las posiciones comienzan en invalido
+        // resetear bloques
+        for(int i = 0; i < blocks; i++)
+        {
+            columns[i].tag = 0;
+            columns[i].status = Status.Invalid;
+            for(int k = 0; k < words; k++)
+            {
+                columns[i].words[k] = 0;
+            }
+        }
+    }
+
     // Mejorias:
     // Se podria mejorar el algoritmo para buscar si la cache tiene el palabra con
     // la direccion direction.
@@ -125,9 +140,6 @@ public class DataCache : Cache<int>
         }
 
     }
-
-    public int GetWord(int block, int word) => columns[block].words[word];
-    public int GetTag(int block) => columns[block].tag;
-    public Status GetStatus(int block) => columns[block].status;
+    
 
 }

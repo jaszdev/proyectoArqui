@@ -59,4 +59,22 @@ public abstract class Cache<T>
     public abstract void LoadBlock(int direction);
 
 
+    public int Blocks => blocks;
+    public int Words => words;
+
+    public T GetWord(int block, int word) => columns[block].words[word];
+    public int GetTag(int block) => columns[block].tag;
+    public string GetStatus(int block)
+    {
+        switch (columns[block].status)
+        {
+            case Status.Invalid:
+                return "I";
+            case Status.Modified:
+                return "M";
+            default:
+                return "S";
+        }
+    }
+
 }

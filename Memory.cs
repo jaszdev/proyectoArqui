@@ -54,12 +54,17 @@ public class Memory
     public Memory()
     {
         data = new int[MemoryConstants.DataMemorySize];
-        for (int i = 0; i < MemoryConstants.DataMemorySize; i++) // inicializar toda la memoria en 1
-            data[i] = 1;
-
         instructions = new Instruction[MemoryConstants.InstructionsMemorySize];
         for (int i = 0; i < MemoryConstants.InstructionsMemorySize; i++)
             instructions[i] = new Instruction(0, 0, 0, 0);
+    }
+
+    public void Init()
+    {
+        for (int i = 0; i < MemoryConstants.DataMemorySize; i++) // inicializar toda la memoria en 1
+            data[i] = 1;
+        for (int i = 0; i < MemoryConstants.InstructionsMemorySize; i++)
+            instructions[i].Set(0, 0, 0, 0);
     }
 
     public int GetData(int direction) => data[direction];

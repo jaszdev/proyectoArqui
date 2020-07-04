@@ -20,25 +20,9 @@ public class DataCacheUI : MonoBehaviour
         {
             blocks[i].w0.text = dataCache.GetWord(i, 0).ToString();
             blocks[i].w1.text = dataCache.GetWord(i, 1).ToString();
-            blocks[i].tag.text = dataCache.GetTag(i).ToString();
-
-            Status blockStatus = dataCache.GetStatus(i);
-            string status = "";
-            switch (blockStatus)
-            {
-                case Status.Invalid:
-                    status = "I";
-                    break;
-                case Status.Shared:
-                    status = "C";
-                    break;
-                case Status.Modified:
-                    status = "M";
-                    break;
-                default:
-                    break;
-            }
-
+            blocks[i].tag.text = TBL.DataIndexToDir(dataCache.GetTag(i)).ToString();
+            
+            string status = dataCache.GetStatus(i);
             blocks[i].status.text = status;
         }
     }

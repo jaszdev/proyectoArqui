@@ -15,6 +15,19 @@ public class InstructionsCache : Cache<Instruction>
                 columns[i].words[k] = new Instruction(0, 0, 0, 0);
     }
 
+    public void Init()
+    {
+        for (int i = 0; i < blocks; i++)
+        {
+            columns[i].tag = 0;
+            columns[i].status = Status.Invalid;
+            for (int k = 0; k < words; k++)
+            {
+                columns[i].words[k].Set(0, 0, 0, 0);
+            }
+        }
+    }
+
     public override Instruction Read(int direction)
     {
         for (int i  = 0; i < blocks; i++)

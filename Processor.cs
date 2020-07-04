@@ -34,6 +34,14 @@ public abstract class Processor
     // Data
     protected bool finished = false;
     public bool Finished => finished;
+    public int MemoryAccess = 0;
+    public int TotalCacheMisses = 0;
+    public int LoadMisses = 0;
+    public int LoadAccess = 0;
+    public int StoreMisses = 0;
+    public int StoreAccess = 0;
+
+    public int[] threadsDuration;
 
     // Processor Constructor
     public Processor()
@@ -62,7 +70,7 @@ public abstract class Processor
 
     }
 
-    protected void SaveContext(int thread)
+    public void SaveContext(int thread)
     {
         contextMemory.SetPC(thread, pcRegister); // guardar pc
         for (int i = 0; i < ProcessorConstants.NumRegisters; i++) // guardar registros
@@ -93,7 +101,7 @@ public abstract class Processor
             //Debug.Log("Se termino la ejecucion de todos los hilos");
             return;
         }
-        
+        rl = -1;
         quantumCounter = 0; // resetear contador de quantum
     }
 
@@ -119,5 +127,6 @@ public abstract class Processor
     public Instruction IR => instructionRegister;
     public int Clock => clock;
     public int CurrentThread => currentThread;
+    public int RL => rl;
 
 }

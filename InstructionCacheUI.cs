@@ -23,7 +23,7 @@ public class InstructionCacheUI : MonoBehaviour
             blocks[i].w0.text = instructionCache.GetInstruction(i, 0).Code.ToString();
             blocks[i].w1.text = instructionCache.GetInstruction(i, 1).Code.ToString();
 
-            blocks[i].tag.text = instructionCache.GetTag(i).ToString();
+            blocks[i].tag.text = TBL.InstIndexToDir(instructionCache.GetTag(i)).ToString();
         }
     }
 
