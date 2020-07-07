@@ -69,7 +69,10 @@ public class JaDHeProcessor : Processor
         pcRegister += 4; // siguiente instruccion
 
         // Decode and Execute
+        if (currentThread == 1)
+            Debug.Log("Hilo 1");
         DecodeAndExecute();
+       
 
         threadsDuration[currentThread]++;
 
@@ -128,7 +131,7 @@ public class JaDHeProcessor : Processor
             case 37: // sw
                 MemoryAccess++;
                 StoreAccess++;
-                address = imm + r1;
+                address = imm + registers[r1];
                 sourceReg = r2;
                 dataDirection = TBL.DataDirToIndex(address);
                 writeHit = dataCache.Write(dataDirection, registers[sourceReg]);
@@ -306,7 +309,7 @@ public class JaDHeProcessor : Processor
             string rS = "H" + i + ": ";
             for(int k = 0; k < ProcessorConstants.NumRegisters; k++)
             {
-                rS += contextMemory.GetRegister(i, k) + " ";
+                rS += k + ":" + contextMemory.GetRegister(i, k) + " ";
             }
             resultsFile.WriteLine(rS + " Duracion: " + threadsDuration[i] +"\n");
         }

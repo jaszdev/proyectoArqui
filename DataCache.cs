@@ -31,6 +31,7 @@ public class DataCache : Cache<int>
                 columns[i].words[k] = 0;
             }
         }
+        for (int i = 0; i < blocks; i++) usedOrder[i] = -1;
     }
 
     // Mejorias:
@@ -69,7 +70,8 @@ public class DataCache : Cache<int>
         for (int i = 0; i < blocks; i++)
         {
             if (i == mrub) usedOrder[i] = 1; // bloque mrub es el mas recientemente usado
-            else if (usedOrder[i] != -1) usedOrder[i]++; // * posible error, que termine siendo mas grande que num blocks *
+            //else if (usedOrder[i] != -1) usedOrder[i]++; // * posible error, que termine siendo mas grande que num blocks *
+            else if (usedOrder[i] != -1) usedOrder[i] = Mathf.Clamp(usedOrder[i] + 1, -1, blocks);
             // else if usedOrder[i] == -1, dejarlo en -1
         }
         last_mrub = mrub;

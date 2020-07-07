@@ -25,6 +25,8 @@ public class ProcessorComponent : MonoBehaviour
 
     protected Coroutine currentCoroutine;
 
+    public bool debug = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,10 +57,14 @@ public class ProcessorComponent : MonoBehaviour
 
     IEnumerator RunCoroutine()
     {
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(0.5f);
 
         while (true && !finished)
-        {
+        { 
+            if (debug)
+            {
+                Debug.Log("Debug");
+            }
             processor.Execute();
 
             //UI
@@ -68,6 +74,7 @@ public class ProcessorComponent : MonoBehaviour
             yield return new WaitForSeconds(quatumTime);
         }
         processor.SaveContext(processor.CurrentThread);
+        if (finished) processor.WriteResults("resultados.txt");
     }
 
     public void Abort()

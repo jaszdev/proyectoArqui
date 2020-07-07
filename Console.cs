@@ -62,6 +62,11 @@ public class Console : MonoBehaviour
             validCommand = true;
             processorComponent.processor.WriteResults("resultados.txt");
         }
+        // comando debug
+        else if (words.Length == 1 && (words[0] == "d" || words[0] == "debug"))
+        {
+            processorComponent.debug = !processorComponent.debug;
+        }
         else if (words.Length > 0 && (words[0] == "start" || words[0] == "s"))
         {
             validCommand = true;
@@ -113,7 +118,7 @@ public class Console : MonoBehaviour
                     }
                 }
             }
-        
+
         }
 
         if (!validCommand)
